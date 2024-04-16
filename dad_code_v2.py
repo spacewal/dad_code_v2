@@ -42,7 +42,7 @@ def analyze_stock(ticker):
     model.compile(optimizer='adam', loss='mean_squared_error')
     model.fit(X_train, y_train, epochs=100, batch_size=32, validation_split=0.2, callbacks=[
         EarlyStopping(monitor='val_loss', patience=10),
-        ModelCheckpoint('best_model.h5', save_best_only=True, monitor='val_loss'),
+        ModelCheckpoint('best_model.keras', save_best_only=True, monitor='val_loss'),
         ReduceLROnPlateau(monitor='val_loss', factor=0.1, patience=5),
         CSVLogger('training_log.csv')
     ])
