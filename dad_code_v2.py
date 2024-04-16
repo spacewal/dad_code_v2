@@ -485,12 +485,14 @@ def analyze_stock(ticker):
     # Plotting the actual data with mplfinance
     mpf.plot(data, type='candle', style='charles', volume=True)
 
-    # Overlaying the predicted data
-    plt.figure(figsize=(10,6))
-    plt.plot(predictions_df.index, predictions_df['Close'], linestyle='dashed', marker='o', color='red')
-
-    plt.title(f"{ticker} Stock Price with Predicted Next 4 Days")
-    plt.show()
+    # Create a figure and an axes object
+    fig, ax = plt.subplots(figsize=(10, 6))
+    # Plot the predicted data on the axes object
+    ax.plot(predictions_df.index, predictions_df['Close'], linestyle='dashed', marker='o', color='red')
+    # Set title and labels
+    ax.set_title(f"{ticker} Stock Price with Predicted Next 4 Days")
+    # Use Streamlit's st.pyplot() to display the figure object
+    st.pyplot(fig)
 
     # Fetch the latest 60 days of AAPL stock data
     data = yf.download(ticker, period='64d', interval='1d') # Fetch 64 days to display last 60 days in the chart
@@ -522,11 +524,17 @@ def analyze_stock(ticker):
     combined_data = pd.concat([data['Close'], predicted_data['Close']])
     combined_data = combined_data[-64:] # Last 60 days of actual data + 4 days of predictions
 
-    # Plotting the data
-    plt.figure(figsize=(10,6))
-    plt.plot(combined_data, linestyle='-', marker='o', color='blue')
-    plt.title(f"{ticker} Stock Price: Last 60 Days and Next 4 Days Predicted")
-    plt.show()
+    # Create a figure and axes object
+    fig, ax = plt.subplots(figsize=(10, 6))
+
+    # Plot the combined data on the axes object
+    ax.plot(combined_data, linestyle='-', marker='o', color='blue')
+
+    # Set title
+    ax.set_title(f"{ticker} Stock Price: Last 60 Days and Next 4 Days Predicted")
+
+    # Use Streamlit's st.pyplot() to display the figure object
+    st.pyplot(fig)
 
     # Fetch the latest 60 days of ticker stock data
     data = yf.download(ticker, period='64d', interval='1d') # Fetch 64 days to display last 60 days in the chart
@@ -559,17 +567,23 @@ def analyze_stock(ticker):
     combined_data = combined_data[-64:] # Last 60 days of actual data + 4 days of predictions
 
     # Plotting the actual data
-    plt.figure(figsize=(10,6))
-    plt.plot(data.index[-60:], data['Close'][-60:], linestyle='-', marker='o', color='blue', label='Actual Data')
+    # Create a figure and an axes object
+    fig, ax = plt.subplots(figsize=(10, 6))
 
-    # Plotting the predicted data
-    plt.plot(prediction_dates, predicted_prices, linestyle='-', marker='o', color='red', label='Predicted Data')
+    # Plot the actual data on the axes
+    ax.plot(data.index[-60:], data['Close'][-60:], linestyle='-', marker='o', color='blue', label='Actual Data')
 
-    plt.title(f"{ticker} Stock Price: Last 60 Days and Next 4 Days Predicted")
-    plt.xlabel('Date')
-    plt.ylabel('Price')
-    plt.legend()
-    plt.show()
+    # Plot the predicted data
+    ax.plot(prediction_dates, predicted_prices, linestyle='-', marker='o', color='red', label='Predicted Data')
+
+    # Set title and labels
+    ax.set_title(f"{ticker} Stock Price: Last 60 Days and Next 4 Days Predicted")
+    ax.set_xlabel('Date')
+    ax.set_ylabel('Price')
+    ax.legend()
+
+    # Use Streamlit's st.pyplot() to display the figure object
+    st.pyplot(fig)
 
     def predict_stock_price(input_date):
     # Check if the input date is a valid date format
