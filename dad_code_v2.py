@@ -410,7 +410,7 @@ def analyze_stock(ticker):
 
     # Now evaluate the model on the test data
     test_loss = model.evaluate(X_test, y_test)
-    print("Test Loss: ", test_loss)
+    st.write("Test Loss: ", test_loss)
 
     # Making predictions
     y_pred = model.predict(X_test)
@@ -419,8 +419,8 @@ def analyze_stock(ticker):
     mae = mean_absolute_error(y_test, y_pred)
     rmse = mean_squared_error(y_test, y_pred, squared=False)
 
-    print("Mean Absolute Error: ", mae)
-    print("Root Mean Square Error: ", rmse)
+    st.write("Mean Absolute Error: ", mae)
+    st.write("Root Mean Square Error: ", rmse)
 
     # Fetching the latest 60 days of AAPL stock data
     data = yf.download(ticker, period='60d', interval='1d')
@@ -442,7 +442,7 @@ def analyze_stock(ticker):
     predicted_stock_price = model.predict(X_latest)
     predicted_stock_price = scaler.inverse_transform(predicted_stock_price)
 
-    print("Predicted Stock Prices for the next 4 days: ", predicted_stock_price)
+    st.write("Predicted Stock Prices for the next 4 days: ", predicted_stock_price)
 
     # Fetch the latest 60 days of AAPL stock data
     data = yf.download(ticker, period='60d', interval='1d')
@@ -469,7 +469,7 @@ def analyze_stock(ticker):
         # Inverse transform the prediction to the original price scale
         predicted_prices.append(scaler.inverse_transform(next_prediction)[0, 0])
 
-    print("Predicted Stock Prices for the next 4 days: ", predicted_prices)
+    st.write("Predicted Stock Prices for the next 4 days: ", predicted_prices)
 
     # Assuming 'data' is your DataFrame with the fetched AAPL stock data
     # Make sure it contains Open, High, Low, Close, and Volume columns
@@ -590,7 +590,7 @@ def analyze_stock(ticker):
         try:
             input_date = pd.to_datetime(input_date)
         except ValueError:
-            print("Invalid Date Format. Please enter date in YYYY-MM-DD format.")
+            st.write("Invalid Date Format. Please enter date in YYYY-MM-DD format.")
             return
 
     # Fetch data from yfinance
@@ -599,7 +599,7 @@ def analyze_stock(ticker):
         data = yf.download(ticker, start=start_date, end=end_date)
 
         if len(data) < 60:
-            print("Not enough historical data to make a prediction. Try an earlier date.")
+            st.write("Not enough historical data to make a prediction. Try an earlier date.")
             return
 
         # Prepare the data
@@ -619,44 +619,50 @@ def analyze_stock(ticker):
 
         # Output the predictions
         for i, price in enumerate(predicted_prices, 1):
-            print(f"Day {i} prediction: {price}")
+            st.write(f"Day {i} prediction: {price}")
 
     # Example use
-    user_input = input(f"Enter a date (YYYY-MM-DD) to predict {ticker} stock for the next 4 days: ")
+    ticker_label = f"Enter a date (YYYY-MM-DD) to predict {ticker} stock for the next 4 days:"
+    user_input = st.text_input(ticker_label)
     predict_stock_price(user_input)
 
 
 
 
     # Show some output to the user
-    print(f"Analysis for {ticker} complete.")
+    st.write(f"Analysis for {ticker} complete.")
 
 # Main interactive loop
 def main():
     # Get S&P 500 tickers
     sp500_tickers = tickers
 
-    # Interactive session with the user
-    while True:
-        # Show all tickers
-        print("Available S&P 500 tickers: ")
-        print(sp500_tickers)
+    # Display available S&P 500 tickers
+    st.write("Available S&P 500 tickers: ")
+    st.dataframe(sp500_tickers)
 
+    # Allow the user to interact continuously
+    while True:
         # User selection
-        ticker = input("Enter a ticker from the S&P 500 to analyze or 'quit' to exit: ").upper()
+        ticker = st.text_input("Enter a ticker from the S&P 500 to analyze or 'QUIT' to exit:").upper()
         if ticker == 'QUIT':
-            print("Exiting the program.")
-            break
+            st.write("Exiting the program.")
+            st.stop()
         elif ticker in sp500_tickers:
             analyze_stock(ticker)
         else:
-            print("Invalid ticker. Please try again.")
+            st.error("Invalid ticker. Please try again.")
 
         # Ask user if they want to analyze another stock
-        continue_choice = input("Would you like to analyze another stock? (yes/no): ").lower()
-        if continue_choice != 'yes':
-            print("Exiting the program.")
-            break
+        continue_choice = st.radio(
+            "Would you like to analyze another stock?",
+            ('yes', 'no')
+        ).lower()
 
+        if continue_choice != 'yes':
+            st.write("Exiting the program.")
+            st.stop()
+
+# Call the main function to initiate the app
 if __name__ == "__main__":
     main()
