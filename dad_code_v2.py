@@ -40,13 +40,6 @@ def load_sp500_data():
 sp500_df = load_sp500_data()
 tickers = sp500_df['Symbol'].tolist()
 
-# Select ticker input
-selected_ticker = st.selectbox('Select a ticker:', tickers)
-
-sp500_df.head()
-
-"""# Functions"""
-
 # Define the Ichimoku Cloud calculation function
 def calculate_ichimoku_cloud(df):
     tenkan_period = 9
@@ -270,7 +263,6 @@ merged_df['Date'] = merged_df['Date'].dt.date
 
 merged_df = merged_df.dropna()
 
-"""# Functions for Predictions
 
 """
 
