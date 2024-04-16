@@ -282,6 +282,8 @@ merged_df.info()
 
 merged_df.head()
 
+st.dataframe(merged_df)
+
 """# Functions for Predictions
 
 """
